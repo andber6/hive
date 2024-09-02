@@ -26,6 +26,24 @@ async fn main() {
         tests: vec![],
     };
 
+    fn create_suite(name: &str, description: &str) -> Suite {
+        Suite {
+            name: name.to_string(),
+            description: description.to_string(),
+            tests: vec![],
+        }
+    }
+
+    fn add_test(suite: &mut Suite, name: &str, description: &str, run: fn()) {
+        suite.add(TestSpec {
+            name: name.to_string(),
+            description: description.to_string(),
+            always_run: false,
+            run,
+            client: None,
+        });
+    }
+
     history_rpc_compat.add(TestSpec {
         name: "client launch".to_string(),
         description: "This test launches the client and collects its logs.".to_string(),
@@ -80,88 +98,70 @@ async fn main() {
         client: None,
     });
 
-    let mut state_rpc_compat = Suite {
-        name: "state-rpc-compat".to_string(),
-        description: "The RPC-compatibility test suite runs a set of RPC related tests against a
-        running node. It tests client implementations of the JSON-RPC API for
-        conformance with the portal network API specification."
-            .to_string(),
-        tests: vec![],
-    };
+    let mut state_rpc_compat = create_suite(
+        "state-rpc-compat",
+        "The RPC-compatibility test suite runs a set of RPC related tests against a running node. It tests client implementations of the JSON-RPC API for conformance with the portal network API specification."
+    );
 
-    state_rpc_compat.add(TestSpec {
-        name: "client launch".to_string(),
-        description: "This test launches the client and collects its logs.".to_string(),
-        always_run: false,
-        run: run_rpc_compat_state_test_suite,
-        client: None,
-    });
+    add_test(
+        &mut state_rpc_compat,
+        "client launch",
+        "This test launches the client and collects its logs.",
+        run_rpc_compat_state_test_suite,
+        None
+    );
 
-    let mut state_interop = Suite {
-        name: "state-interop".to_string(),
-        description:
-            "The interop test suite runs a set of scenarios to test interoperability between
-        portal network clients"
-                .to_string(),
-        tests: vec![],
-    };
+    let mut state_interop = create_suite(
+        "state-interop",
+        "The interop test suite runs a set of scenarios to test interoperability between portal network clients"
+    );
 
-    state_interop.add(TestSpec {
-        name: "client launch".to_string(),
-        description: "This test launches the client and collects its logs.".to_string(),
-        always_run: false,
-        run: test_portal_state_interop,
-        client: None,
-    });
+    add_test(
+        &mut state_interop,
+        "client launch",
+        "This test launches the client and collects its logs.",
+        test_portal_state_interop,
+        None
+    );
 
-    let mut beacon_rpc_compat = Suite {
-        name: "beacon-rpc-compat".to_string(),
-        description: "The RPC-compatibility test suite runs a set of RPC related tests against a
-        running node. It tests client implementations of the JSON-RPC API for
-        conformance with the portal network API specification."
-            .to_string(),
-        tests: vec![],
-    };
+    let mut beacon_rpc_compat = create_suite(
+        "beacon-rpc-compat",
+        "The RPC-compatibility test suite runs a set of RPC related tests against a running node. It tests client implementations of the JSON-RPC API for conformance with the portal network API specification."
+    );
 
-    beacon_rpc_compat.add(TestSpec {
-        name: "client launch".to_string(),
-        description: "This test launches the client and collects its logs.".to_string(),
-        always_run: false,
-        run: run_rpc_compat_beacon_test_suite,
-        client: None,
-    });
+    add_test(
+        &mut beacon_rpc_compat,
+        "client launch",
+        "This test launches the client and collects its logs.",
+        run_rpc_compat_beacon_test_suite,
+        None
+    );
 
-    let mut beacon_interop = Suite {
-        name: "beacon-interop".to_string(),
-        description:
-            "The interop test suite runs a set of scenarios to test interoperability between
-        portal network clients"
-                .to_string(),
-        tests: vec![],
-    };
+    let mut beacon_interop = create_suite(
+        "beacon-interop",
+        "The interop test suite runs a set of scenarios to test interoperability between portal network clients"
+    );
 
-    beacon_interop.add(TestSpec {
-        name: "client launch".to_string(),
-        description: "This test launches the client and collects its logs.".to_string(),
-        always_run: false,
-        run: test_portal_beacon_interop,
-        client: None,
-    });
+    add_test(
+        &mut beacon_interop,
+        "client launch",
+        "This test launches the client and collects its logs.",
+        test_portal_beacon_interop,
+        None
+    );
 
-    let mut beacon_mesh = Suite {
-        name: "beacon-mesh".to_string(),
-        description: "The portal mesh test suite runs a set of scenarios to test 3 clients"
-            .to_string(),
-        tests: vec![],
-    };
+    let mut beacon_mesh = create_suite(
+        "beacon-mesh",
+        "The portal mesh test suite runs a set of scenarios to test 3 clients"
+    );
 
-    beacon_mesh.add(TestSpec {
-        name: "client launch".to_string(),
-        description: "This test launches the client and collects its logs.".to_string(),
-        always_run: false,
-        run: test_portal_beacon_mesh,
-        client: None,
-    });
+    add_test(
+        &mut beacon_mesh,
+        "client launch",
+        "This test launches the client and collects its logs.",
+        test_portal_beacon_mesh,
+        None
+    );
 
     let sim = Simulation::new();
     run_suite(
